@@ -1,0 +1,69 @@
+CREATE DATABASE OnlineStoreDB;
+
+USE OnlineStoreDB;
+
+CREATE TABLE Products (
+    ProductID INT PRIMARY KEY,
+    ProductName VARCHAR(100),
+    Price DECIMAL(10, 2)
+);
+
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY,
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Email VARCHAR(100)
+);
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    OrderDate DATE,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+
+CREATE TABLE OrderItems (
+    OrderItemID INT PRIMARY KEY,
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    TotalPrice DECIMAL(10, 2),
+    FOREIGN KEY (OrderID) REFERENCES Orders(OrderID),
+    FOREIGN KEY (ProductID) REFERENCES Products(ProductID)
+);
+
+INSERT INTO Products (ProductID, ProductName, Price)
+VALUES
+    (1, 'Laptop', 800.00),
+    (2, 'Smartphone', 400.00),
+    (3, 'Headphones', 50.00);
+
+INSERT INTO Customers (CustomerID, FirstName, LastName, Email)
+VALUES
+    (1, 'ali', 'ak', 'ali.ak@example.com'),
+    (2, 'can', 'su', 'can.su@example.com');
+
+INSERT INTO Orders (OrderID, CustomerID, OrderDate)
+VALUES
+    (1, 1, '2023-01-15'),
+    (2, 2, '2023-02-20');
+
+INSERT INTO OrderItems (OrderItemID, OrderID, ProductID, Quantity, TotalPrice)
+VALUES
+    (1, 1, 1, 2, 1600.00),
+    (2, 1, 2, 1, 400.00),
+    (3, 2, 3, 3, 150.00);
+
+SELECT
+    Orders.OrderID,
+    Customers.FirstName,
+    Customers.LastName,
+    Orders.OrderDate,
+    Products.ProductName,
+    OrderItems.Quantity,
+    OrderItems.TotalPrice
+FROM
+    Orders
+JOIN Customers ON Orders.CustomerID = Customers.CustomerID
+JOIN OrderItems ON Orders.OrderID = OrderItems.OrderID
+JOIN Products ON OrderItems.ProductID = Products.ProductID;
